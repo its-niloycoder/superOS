@@ -1,0 +1,11 @@
+thinking kernal as the cpu driver
+
+apu (cpu + gpu in single chpip) needs dynamic drivers to work 
+and get in formations form gpu
+
+firmwere management like bios
+bios and other chip set manager should implement
+
+third partty compatablity
+
+every thing is file + 
