@@ -10,4 +10,4 @@ buesness model of code\n
 educational model of code should saparated
 initily this is for educational code which is
 version 0.*topic*.*concept*
-and version 1 should be the production codes
+and version 1 should be the production code base
