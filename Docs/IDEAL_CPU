@@ -15,8 +15,11 @@ mamory address spacing: Unified and Separate Address Spaces
 
 genrel puppus opprating system
     unix: bsd and its varients
-    uni*: linuxed, darwin, windows
+    uni*: linuxed, macos, windows
     windows
+    ...
 
 special pourpus opprating system:
-    
+    iot focused opprating system
+    embaded opprating system
+    ... 
