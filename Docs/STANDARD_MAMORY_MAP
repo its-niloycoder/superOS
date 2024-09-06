@@ -1,4 +1,4 @@
-1 MB bios stsndard mamory map
+1MB bios stsndard mamory map
 
 Address Range	    Size	    Description
 0x0000 - 0x03FF	    1 KB	    Interrupt Vector Table (IVT)
