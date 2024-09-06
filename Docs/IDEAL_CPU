@@ -10,3 +10,13 @@ for intle and amd or other x86 based cpu is based on idel cpu
 which is 8086 (because of it entry timing and features)
 
 8086 based bios standard mamory map is used for devloping this os for initial
+
+mamory address spacing: Unified and Separate Address Spaces
+
+genrel puppus opprating system
+    unix: bsd and its varients
+    uni*: linuxed, darwin, windows
+    windows
+
+special pourpus opprating system:
+    
