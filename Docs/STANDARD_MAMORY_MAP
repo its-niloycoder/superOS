@@ -1,0 +1,17 @@
+1 MB bios stsndard mamory map
+
+Address Range	    Size	    Description
+0x0000 - 0x03FF	    1 KB	    Interrupt Vector Table (IVT)
+0x0400 - 0x04FF 	256 bytes	BIOS Data Area (BDA)
+0x0500 - 0x07FF 	768 bytes	Extended BIOS Data Area (EBDA)
+0x0800 - 0x09FF 	512 bytes	Video Display Data: Many BIOSes nce.
+0x0A00 - 0x0BFF 	512 bytes	Additional BIOS Data: .
+0x0C00 - 0x4FFF 	~20 KB	    Free RAM (Conventional Memory): .
+0x5000 - 0x7BFF 	~11 KB	    Option ROMs / Peripheral BIOS Extensions:.
+0x7C00 - 0x7DFF 	512 bytes	Boot Sector (BIOS loads here): bytes.
+0x7E00 - 0x7FFF 	512 bytes	Free Space for Bootloader Use: .
+0x8000 - 0x9FBFF	~638 KB	    Main RAM (Conventional Memory)
+0xA0000 - 0xBFFFF	128 KB	    Video Memory (Display Adapter)
+0xC0000 - 0xC7FFF	32 KB	    Video BIOS / Option ROM
+0xC8000 - 0xDFFFF	96 KB	    Other Option ROMs
+0xE0000 - 0xFFFFF	128 KB	    System BIOS ROM
