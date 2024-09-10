@@ -19,37 +19,25 @@ BASE EQU 7c00h
 [ORG BASE]                   ; Set the base address for MBR
 
 
-jmp _start
-message: db "hello world my name is niloy", 0
-msg_dev_by_zero: db "Error: devied by zero", 0
-msg_disk_err: db "Faild to load from disk", 0
-
 _start:
-    jmp 0x7c0:step2
-
-
-handle_zero:
-    mov si, msg_dev_by_zero
-    call print
-    iret
-
-
-step2:
+    ; jmp 0x7c0:_start
     cli
     ; ss = es = ds = 0x7c0
     mov ax, 0x7c0
     mov ds, ax
     mov es, ax
     mov ss, ax
-    mov sp, 0x7c00 
+    mov sp, 0x7c00  ; stack pointer useed as back word 
     sti
 
     xor ax, ax
 
 
 
-    mov word[ss:0x00], handle_zero
-    mov word[ss:0x02], 0x7c0
+    ; mov word[ss:0x00], handle_zero
+    ; mov word[ss:0x02], 0x7c0
+    mov word [0x0000], handle_zero
+    mov word [0x0002], 0x7C0
 
     xor ax, ax ; mov ax, 0x0000
     ;this line will set the error flag so jc will always fire
@@ -57,31 +45,33 @@ step2:
     mov si, message
     call print
 
-    mov ax, 0x0201
-    mov bx, buffer
-    mov cx, 0x0002
-    mov dh, 0x0000
+    ; mov ax, 0x0201
+    ; mov bx, buffer
+    ; mov cx, 0x0002
+    ; mov dh, 0x0000
+
+    mov ah, 0x02      ; Read sector
+    mov al, 0x01      ; Number of sectors to read
+    mov ch, 0x00      ; Cylinder
+    mov cl, 0x02      ; Sector number (2 is usually the first boot sector after the MBR)
+    mov dh, 0x00      ; Head number
+    mov dl, 0x80      ; Drive number (0x80 = first hard disk)
+    mov bx, buffer    ; Load into buffer
     int 0x13
     
-    jc disk_err
-    jnc disk_success
+    jc .disk_err
+    call .print_hlt
 
-    call print
-    hlt  ;jmp $
 
     ; jmp disk_success; it's also dont need because disk success is next to it
     
-disk_success:
-        mov si, buffer
-        ret
-        ; jmp print_hlt; it' neads here
 
-disk_err:
+.disk_err:
     mov si, msg_disk_err
     ret
     ; jmp print_hlt; actualy that not need because it automaticaly goes in to next instruction
 
-print_hlt:
+.print_hlt:
     call print
     hlt  ;jmp $
 
@@ -91,22 +81,31 @@ print:
     lodsb
     cmp al, 0
     je .done
-    call print_char
+    call .print_char
     jmp .loop
+
+.print_char:
+    mov ah, 0eh
+    int 0x10
 .done:
     ret
 
-print_char:
-    mov ah, 0eh
-    int 0x10
-    ret
 
+handle_zero:
+    mov si, msg_dev_by_zero
+    call print
+    iret
+
+
+message: db "hello world my name is niloy"
+msg_dev_by_zero: db "Error: devied by zero"
+msg_disk_err: db "Faild to load from disk"
 
 times 510-($ - $$) db 0
 dw 0xAA55
 
-buffer: db 13
-
+buffer:
+    times 512 db 'A'
 
 ; 32 bit protected mode for kernel space
 

@@ -1,7 +1,7 @@
 # cross compiler location
 PREFIX := $(HOME)/opt/cross
-TARGET := i686-elf
 PATH := $(PREFIX)/bin:$(PATH)
+TARGET := i686-elf
 BUILD := ./build
 
 export PREFIX
@@ -14,14 +14,17 @@ export PATH
 
 # for now it is hard coded
 
-all: build
+all: run
+
+run: boot
+	qemu-system-i386 -hda $(BUILD)/x86.boot
 
 build: boot keanel usr
 	# $(PREFIX)/bin/$(TARGET)-gcc -T LINKER.ld -nostdlib
 	
 
 boot: src/startup/x86.nasm
-	nasm src/startup/x86.nasm -o $(BUILD)/x86.boot
+	nasm -f bin src/startup/x86.nasm -o $(BUILD)/x86.boot
 
 
 # Clean target
