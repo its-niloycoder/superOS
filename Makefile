@@ -17,7 +17,7 @@ export PATH
 all: run
 
 run: boot
-	qemu-system-i386 -hda $(BUILD)/x86.boot
+	qemu-system-x86_64 -hda $(BUILD)/x86.boot
 
 build: boot keanel usr
 	# $(PREFIX)/bin/$(TARGET)-gcc -T LINKER.ld -nostdlib

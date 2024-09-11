@@ -10,17 +10,17 @@
 ; 16 bit real mode code for boot up
 
 ; configutaion and standards
-BASE EQU 7c00h
+; BASE EQU 7c00h
 ;********************************************************************;
 ;*                           NASM settings                          *;
 ;********************************************************************;
 
 [BITS 16]                    ; Enable 16-bit real mode
-[ORG BASE]                   ; Set the base address for MBR
-
+[ORG 0]                   ; Set the base address for MBR
 
 _start:
-    ; jmp 0x7c0:_start
+    ; jmp 0x7c0:step2
+
     cli
     ; ss = es = ds = 0x7c0
     mov ax, 0x7c0
@@ -30,82 +30,94 @@ _start:
     mov sp, 0x7c00  ; stack pointer useed as back word 
     sti
 
-    xor ax, ax
+    xor ax, ax ; cleaning ax
+
+    ; protected mode
+    cli
+    lgdt [gdt_descriptor]
+    mov eax, cr0
+    or al, 1
+    mov cr0, eax
 
 
 
-    ; mov word[ss:0x00], handle_zero
-    ; mov word[ss:0x02], 0x7c0
-    mov word [0x0000], handle_zero
-    mov word [0x0002], 0x7C0
+; ******************************************************************
+; Global Descriptor Table (GDT)
+; ******************************************************************
+align 8
+gdt_start:
+    ; Null descriptor
+    dd 0x00000000                ; 0x00: Null segment
+    dd 0x00000000                ; 0x04: Null segment
 
-    xor ax, ax ; mov ax, 0x0000
+    ; Code segment descriptor (0x08)
+    dw 0xFFFF                    ; Segment limit (0-15)
+    dw 0x0000                    ; Base address (0-15)
+    db 0x00                      ; Base address (16-23)
+    db 10011010b                 ; Access byte: 1 00 1 1 0 0 1 0 (Code segment, Readable)
+    db 11001111b                 ; Flags: 4-bit limit (16-19) and 32-bit segment (granularity)
+    db 0x00                      ; Base address (24-31)
+
+    ; Data segment descriptor (0x10)
+    dw 0xFFFF                    ; Segment limit (0-15)
+    dw 0x0000                    ; Base address (0-15)
+    db 0x00                      ; Base address (16-23)
+    db 10010010b                 ; Access byte: 1 00 1 1 0 0 1 0 (Data segment, Writable)
+    db 11001111b                 ; Flags: 4-bit limit (16-19) and 32-bit segment (granularity)
+    db 0x00                      ; Base address (24-31)
+
+gdt_end:
+
+; GDT descriptor
+gdt_descriptor:
+    dw gdt_end - gdt_start - 1   ; Size of the GDT
+    dd gdt_start                 ; Address of the GDT
+
+; ******************************************************************
+; Bootloader Padding and Signature
+; ******************************************************************
+
+
+
+[BITS 32]
+
     ;this line will set the error flag so jc will always fire
     ;div ax
-    mov si, message
-    call print
+    ; mov si, wellcome_message
+    ; call print
 
-    ; mov ax, 0x0201
-    ; mov bx, buffer
-    ; mov cx, 0x0002
-    ; mov dh, 0x0000
 
-    mov ah, 0x02      ; Read sector
-    mov al, 0x01      ; Number of sectors to read
-    mov ch, 0x00      ; Cylinder
-    mov cl, 0x02      ; Sector number (2 is usually the first boot sector after the MBR)
-    mov dh, 0x00      ; Head number
-    mov dl, 0x80      ; Drive number (0x80 = first hard disk)
-    mov bx, buffer    ; Load into buffer
-    int 0x13
-    
-    jc .disk_err
-    call .print_hlt
 
+    ; mov si, buffer1
+    ; call print
+
+    jmp $   ; hlt pause inturupt
 
     ; jmp disk_success; it's also dont need because disk success is next to it
-    
-
-.disk_err:
-    mov si, msg_disk_err
-    ret
-    ; jmp print_hlt; actualy that not need because it automaticaly goes in to next instruction
-
-.print_hlt:
-    call print
-    hlt  ;jmp $
-
-print:
-    mov bx, 0
-.loop:
-    lodsb
-    cmp al, 0
-    je .done
-    call .print_char
-    jmp .loop
-
-.print_char:
-    mov ah, 0eh
-    int 0x10
-.done:
-    ret
 
 
-handle_zero:
-    mov si, msg_dev_by_zero
-    call print
-    iret
 
+; .data section
+; wellcome_message: db "Wellcome to superOS", 0
+; disk_err_msg: db "Faild to load from disk", 0
 
-message: db "hello world my name is niloy"
-msg_dev_by_zero: db "Error: devied by zero"
-msg_disk_err: db "Faild to load from disk"
+; static this is accaciable
+; buffer:
+;     times 20 db 'A'
+;     db 0
+
 
 times 510-($ - $$) db 0
 dw 0xAA55
+; boot secter ends here and under this line any thing dont get executed
 
-buffer:
-    times 512 db 'A'
+
+; Dont works under those address because of i dont know 
+; buffer2:
+;     times 20 db 'A'
+;     db 0
+
+
 
 ; 32 bit protected mode for kernel space
 
