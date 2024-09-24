@@ -1,3 +1,8 @@
 .vscode/
 .git*
 build/
+
+# Total-C
+# Total-Assembly
+
+# SimpleOS

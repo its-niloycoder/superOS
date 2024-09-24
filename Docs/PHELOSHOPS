@@ -8,4 +8,8 @@ bios and other chip set manager should implement
 
 third partty compatablity
 
-every thing is file + 
+every thing is file + ...
+
+writing kernel in any high lavel protable language
+don't make you embaded code absulutly portable
+because every system have a unique architure
