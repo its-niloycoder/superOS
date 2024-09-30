@@ -58,12 +58,12 @@ void pit_init() {
 void kernel_main(void)
 {
     pit_init();
-    __asm__("sti");
+//    __asm__("sti");
     /*
         this line makes windows flashing
         this is first i seen in supperOS root repo
     */
-    const char *string = "Thats a Text: ";
+    const char *string = "                           Yes I am a Useless kernel                            ";
     char *videomemptr = (char *)0xb8000; // this is text mamory not video memory
 
 /*
@@ -103,6 +103,7 @@ for(unsigned char _p=0; 1; _p++) {
     char num_buffer_str[INT_STRING_BUFFER];
     intToStr(_p, num_buffer_str);
 
+	/*
     j = 0;
     while (num_buffer_str[j] != '\0')
     {
@@ -110,7 +111,7 @@ for(unsigned char _p=0; 1; _p++) {
         videomemptr[i + 1] = _p;
         ++j;
         i = i + 2;
-    }
+    }*/
 
 
     for (int _DELAY_VAR=0; _DELAY_VAR<40000000; _DELAY_VAR++) {}
