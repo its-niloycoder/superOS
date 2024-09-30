@@ -2,6 +2,8 @@
 .git*
 build/
 
+
+# those folders are not for root project
 # Total-C
 # Total-Assembly
 
